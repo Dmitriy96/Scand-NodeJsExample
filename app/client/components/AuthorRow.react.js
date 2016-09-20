@@ -1,5 +1,6 @@
 import React from 'react';
 import BookElement from './BookElement.react.js'
+import { showModal } from '../actions/show-modal'
 
 export default class AuthorRow extends React.Component {
 
@@ -22,26 +23,40 @@ export default class AuthorRow extends React.Component {
         }
     }
 
-    onClick() {
+    onIncrementButtonClick() {
         this.setState({
             value: ++this.state.value
         })
     }
 
+    onEditButtonClick() {
+        this.props.showModal(
+            'EDIT_AUTHOR',
+            this.props.author.surname
+        )
+    }
+
     render() {
         let btnClass = `btn btn-${this.context.buttonStyle ? this.context.buttonStyle : 'danger'}`;
+        let author = this.props.author;
+        /*if (this.props.updatedAuthor) {
+            author = this.props.updatedAuthor
+        }*/
         return (
             <tr>
-                <td>{this.props.author.name}</td>
-                <td>{this.props.author.surname}</td>
+                <td>{author.name}</td>
+                <td>{author.surname}</td>
                 <td>
-                    {this.props.author.books.map(function(book) {
+                    {author.books.map(function(book) {
                         return <BookElement book={book} key={book.title}/>
                     })}
                 </td>
                 <td>
                     <label>{this.state.value}</label>
-                    <button type="button" className={btnClass} onClick={this.onClick.bind(this)}>+</button>
+                    <button type="button" className={btnClass} onClick={this.onIncrementButtonClick.bind(this)}>+</button>
+                </td>
+                <td>
+                    <button type="button" onClick={this.onEditButtonClick.bind(this)}>Edit</button>
                 </td>
             </tr>
         );

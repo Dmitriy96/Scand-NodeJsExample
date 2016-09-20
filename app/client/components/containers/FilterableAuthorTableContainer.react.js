@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import request from 'superagent';
 import FilterableAuthorTable from '../FilterableAuthorTable.react.js'
-import * as actions from '../../actions/receive-authors'
+import ModalRootContainer from './ModalRootContainer.react'
+import * as receiveAuthors from '../../actions/receive-authors'
 
 
 class FilterableAuthorTableContainer extends React.Component {
@@ -11,7 +12,7 @@ class FilterableAuthorTableContainer extends React.Component {
     componentDidMount() {
         request
             .get('/json')
-            .end((err, res) =>{
+            .end((err, res) => {
                 let authors;
                 if (err || !res.ok) {
                     authors = []
@@ -23,8 +24,12 @@ class FilterableAuthorTableContainer extends React.Component {
     }
 
     render() {
+        let authors = this.props.authors;
         return (
-            <FilterableAuthorTable authors={this.props.authors} />
+            <div>
+                <FilterableAuthorTable authors={this.props.authors}/>
+                <ModalRootContainer {...authors} />
+            </div>
         );
     }
 }
@@ -36,7 +41,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch)
+    return bindActionCreators(receiveAuthors, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterableAuthorTableContainer);

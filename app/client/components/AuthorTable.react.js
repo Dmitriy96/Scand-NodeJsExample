@@ -1,5 +1,5 @@
 import React from 'react';
-import AuthorRow from './AuthorRow.react'
+import AuthorRowContainer from './containers/AuthorRowContainer.react'
 
 export default class AuthorTable extends React.Component {
 
@@ -13,9 +13,10 @@ export default class AuthorTable extends React.Component {
 
 
     render() {
+        console.log('AuthorTable render', this.props);
         var rows = [];
         this.props.authors.forEach((author) => {
-            rows.push(<AuthorRow author={author} key={author.surname} />);
+            rows.push(<AuthorRowContainer author={author} key={author.surname} />);
         });
         return (
             <table className="table table-hover">
@@ -25,6 +26,7 @@ export default class AuthorTable extends React.Component {
                     <th>Surname</th>
                     <th>Books</th>
                     <th>Quantity</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>{rows}</tbody>
