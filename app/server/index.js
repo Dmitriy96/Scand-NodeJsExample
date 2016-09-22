@@ -8,7 +8,7 @@ app.use(express.static('public/images'));
 app.use(express.static('public/js'));
 app.use(express.static('public/stylesheets'));
 
-app.get('/json', function(req, res) {
+app.get('/authors', function(req, res) {
     new Promise(function(resolve, reject) {
         let books = [
             [new Book('Martin Iden', new Date()), new Book('The Iron Heel', new Date())],

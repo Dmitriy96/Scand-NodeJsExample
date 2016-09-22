@@ -5,9 +5,9 @@ import BookElement from './BookElement.react.js'
 export default class EditAuthorModal extends React.Component {
 
     state = {
-        name: this.props.author.name,
-        surname: this.props.author.surname,
-        books: this.props.author.books
+        name: '',
+        surname: '',
+        bookTitle: ''
     };
 
     onNameChange = (event) => {
@@ -22,11 +22,17 @@ export default class EditAuthorModal extends React.Component {
         });
     };
 
+    onBookTitleChange = (event) => {
+        this.setState({
+            bookTitle: event.target.value
+        });
+    };
+
     render() {
         return (
             <Modal show={true}>
                 <Modal.Header>
-                    <Modal.Title>Author editing</Modal.Title>
+                    <Modal.Title>Author creating</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div>
@@ -39,29 +45,24 @@ export default class EditAuthorModal extends React.Component {
                             <input type="text" className="form-control" value={this.state.surname} onChange={this.onSurnameChange}/>
                         </div>
                         <div className="form-group">
-                            <label>Books: </label>
-                            <select className="form-control">
-                                {this.state.books.map((book, index) => {
-                                    return <option value={book.title} key={index}>{book.title}</option>
-                                })}
-                            </select>
+                            <label>Book title: </label>
+                            <input type="text" className="form-control" value={this.state.bookTitle} onChange={this.onBookTitleChange}/>
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="btn-group">
                         <button className="btn btn-success" onClick={() => {
-                                this.props.updateAuthor(
-                                this.props.author.surname,
+                                this.props.createAuthor(
                                 {
                                     name: this.state.name,
                                     surname: this.state.surname,
-                                    books: this.state.books
+                                    books: [{title: this.state.bookTitle, publishingDate: new Date()}]
                                 });
                                 this.props.hideModal();
                             }
                         }>
-                            Update
+                            Create
                         </button>
                         <button className="btn btn-default" onClick={this.props.hideModal}>
                             Cancel

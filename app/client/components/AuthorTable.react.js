@@ -13,10 +13,9 @@ export default class AuthorTable extends React.Component {
 
 
     render() {
-        console.log('AuthorTable render', this.props);
         var rows = [];
         this.props.authors.forEach((author) => {
-            rows.push(<AuthorRowContainer author={author} key={author.surname} />);
+            rows.push(<AuthorRowContainer author={author} key={author.id} />);
         });
         return (
             <table className="table table-hover">

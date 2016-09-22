@@ -3,9 +3,11 @@ var webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = [{
-    entry: "./app/client/components",
+    entry: "./app/client/components/main",
     output: {
-        filename: "./public/js/browser-bundle.js"
+        filename: "./public/js/browser-bundle.js",
+        library: 'nodeExample',
+        libraryTarget: 'umd'
     },
     //entry: {
     //    app: [

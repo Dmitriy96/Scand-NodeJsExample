@@ -1,6 +1,7 @@
 import React from 'react';
 import BookElement from './BookElement.react.js'
 import { showModal } from '../actions/show-modal'
+import classnames from 'classnames';
 
 export default class AuthorRow extends React.Component {
 
@@ -13,7 +14,8 @@ export default class AuthorRow extends React.Component {
     };
 
     static contextTypes = {
-        buttonStyle: React.PropTypes.string
+        buttonStyle: React.PropTypes.string,
+        url: React.PropTypes.string
     };
 
     constructor(props) {
@@ -23,40 +25,45 @@ export default class AuthorRow extends React.Component {
         }
     }
 
-    onIncrementButtonClick() {
+    onIncrementButtonClick = () => {
         this.setState({
             value: ++this.state.value
         })
-    }
+    };
 
-    onEditButtonClick() {
+    onEditButtonClick = () => {
         this.props.showModal(
             'EDIT_AUTHOR',
-            this.props.author.surname
+            this.props.author.id
         )
-    }
+    };
+
+    onDeleteButtonClick = () => {
+        this.props.deleteAuthor(
+            this.props.author.id,
+            this.context.url
+        )
+    };
 
     render() {
         let btnClass = `btn btn-${this.context.buttonStyle ? this.context.buttonStyle : 'danger'}`;
         let author = this.props.author;
-        /*if (this.props.updatedAuthor) {
-            author = this.props.updatedAuthor
-        }*/
         return (
             <tr>
                 <td>{author.name}</td>
                 <td>{author.surname}</td>
                 <td>
-                    {author.books.map(function(book) {
-                        return <BookElement book={book} key={book.title}/>
+                    {author.books.map(function(book, index) {
+                        return <BookElement book={book} key={index}/>
                     })}
                 </td>
                 <td>
                     <label>{this.state.value}</label>
-                    <button type="button" className={btnClass} onClick={this.onIncrementButtonClick.bind(this)}>+</button>
+                    <button type="button" className={btnClass} onClick={this.onIncrementButtonClick}>+</button>
                 </td>
                 <td>
-                    <button type="button" onClick={this.onEditButtonClick.bind(this)}>Edit</button>
+                    <button type="button" className="btn btn-warning" onClick={this.onEditButtonClick}>Edit</button>
+                    <button type="button" className="btn btn-danger" onClick={this.onDeleteButtonClick}>Delete</button>
                 </td>
             </tr>
         );

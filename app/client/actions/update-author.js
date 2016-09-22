@@ -1,9 +1,9 @@
 export const UPDATE_AUTHOR = 'UPDATE_AUTHOR';
 
-export function updateAuthor(surname, updatedAuthor) {
+export function updateAuthor(id, updatedAuthor) {
     return {
         type: UPDATE_AUTHOR,
-        surname: surname,
+        id: id,
         updatedAuthor: updatedAuthor
     }
 };

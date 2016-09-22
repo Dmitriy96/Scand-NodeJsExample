@@ -7,10 +7,14 @@ import FilterableAuthorTableContainer from './containers/FilterableAuthorTableCo
 
 const store = createStore(reducers);
 
-ReactDOM.render(
-    <Provider store={store}>
-        <FilterableAuthorTableContainer />
-    </Provider>,
-    document.getElementById('container')
-);
+function main(rootElement, params) {
+    ReactDOM.render(
+        <Provider store={store}>
+            <FilterableAuthorTableContainer url={params.url} />
+        </Provider>,
+        //document.getElementById('container')
+        rootElement
+    );
+}
 
+module.exports = main;
