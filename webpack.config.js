@@ -3,7 +3,7 @@ var webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = [{
-    entry: "./app/client/components/main",
+    entry: "./app/client/components/",
     output: {
         filename: "./public/js/browser-bundle.js",
         library: 'nodeExample',
@@ -43,7 +43,7 @@ module.exports = [{
     //    new webpack.NoErrorsPlugin(),
     //    new HtmlWebpackPlugin( // Generates index.html
     //        {
-    //            template: 'html-loader!public/html/authors.html', // Load a custom template
+    //            template: 'html-loader!public/html/authors2.html', // Load a custom template
     //            inject: false // Inject all scripts into the body
     //        }
     //    )
@@ -72,3 +72,57 @@ module.exports = [{
         ]
     }
 }];
+
+
+//function plugins() {
+//    return [
+//        new HtmlWebpackPlugin({ title: 'Example', template: './public/html/authors2.html' })
+//    ]
+//}
+//
+//function loaders() {
+//    return [
+//        {
+//            test: /\.jsx?$/,
+//            loader: 'babel',
+//            exclude: /node_modules/,
+//            query: {
+//                presets: ['es2015', 'react', 'stage-0']
+//            }
+//        },
+//        {
+//            test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
+//            loader: 'url-loader?limit=30000&name=[name]-[hash].[ext]'
+//        },
+//        {
+//            test: /\.css$/,
+//            loader: 'style-loader!css-loader'
+//        },
+//        {
+//            test: /\.less$/,
+//            loader: 'style-loader!css-loader!less-loader'
+//        }
+//    ]
+//}
+//
+//function entry() {
+//    return { app: './app/client/components/'}
+//}
+//
+//function output() {
+//    return {
+//        filename: "./public/js/browser-bundle.js",
+//        library: 'nodeExample',
+//        libraryTarget: 'umd',
+//        publicPath: '/'
+//    }
+//}
+//
+///* config */
+//module.exports = {
+//    entry: entry(),
+//    output: output(),
+//    module: { loaders: loaders() },
+//    devServer: { historyApiFallback: true },
+//    plugins: plugins()
+//};

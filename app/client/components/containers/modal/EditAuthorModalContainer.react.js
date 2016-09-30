@@ -1,13 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Modal } from 'react-bootstrap';
-import BookElement from './BookElement.react.js'
+import BookElement from './../../BookElement.react.js'
+import { updateAuthor } from '../../../actions/update-author'
+import { hideAuthorModal } from '../../../actions/hide-author-modal'
 
-export default class EditAuthorModal extends React.Component {
+class EditAuthorModal extends React.Component {
 
     state = {
         name: this.props.author.name,
         surname: this.props.author.surname,
         books: this.props.author.books
+    };
+
+    static contextTypes = {
+        baseUrl: React.PropTypes.string
     };
 
     onNameChange = (event) => {
@@ -42,7 +50,7 @@ export default class EditAuthorModal extends React.Component {
                             <label>Books: </label>
                             <select className="form-control">
                                 {this.state.books.map((book, index) => {
-                                    return <option value={book.title} key={index}>{book.title}</option>
+                                    return <option value={book.name} key={index}>{book.name}</option>
                                 })}
                             </select>
                         </div>
@@ -52,18 +60,20 @@ export default class EditAuthorModal extends React.Component {
                     <div className="btn-group">
                         <button className="btn btn-success" onClick={() => {
                                 this.props.updateAuthor(
-                                this.props.author.surname,
+                                this.props.author.id,
+                                this.context.baseUrl,
                                 {
+                                    id: this.props.author.id,
                                     name: this.state.name,
                                     surname: this.state.surname,
                                     books: this.state.books
                                 });
-                                this.props.hideModal();
+                                this.props.hideAuthorModal();
                             }
                         }>
                             Update
                         </button>
-                        <button className="btn btn-default" onClick={this.props.hideModal}>
+                        <button className="btn btn-default" onClick={this.props.hideAuthorModal}>
                             Cancel
                         </button>
                     </div>
@@ -72,3 +82,20 @@ export default class EditAuthorModal extends React.Component {
         );
     }
 }
+
+function mapStateToProps(state, ownProps) {
+    console.log('EditAuthorModal mapStateToProps', state, ownProps);
+    return {
+        author: state.authors.author,
+        id: state.authors.id
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({updateAuthor, hideAuthorModal}, dispatch)
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EditAuthorModal)

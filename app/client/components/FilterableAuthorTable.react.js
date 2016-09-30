@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthorTable from './AuthorTable.react'
 import SearchBar from './SearchBar.react'
-import ControlPanel from './containers/ControlPanelContainer.react'
+import ControlPanel from './containers/AuthorsControlPanelContainer.react.js'
 
 export default class FilterableAuthorTable extends React.Component {
 
@@ -18,6 +18,7 @@ export default class FilterableAuthorTable extends React.Component {
     }
 
     render() {
+        console.log('FilterableAuthorTable render', this.props, this.state);
         let authors = this.props.authors;
         return (
             <div>
@@ -28,7 +29,7 @@ export default class FilterableAuthorTable extends React.Component {
                     <ControlPanel />
                 </div>
                 <div className="form-group">
-                    <AuthorTable {...authors} />
+                    <AuthorTable authors={authors} />      {/*change to {...authors}*/}
                 </div>
             </div>
         );

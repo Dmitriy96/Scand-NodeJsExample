@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AuthorRowContainer from './AuthorRowContainer.react.js'
-import { showModal } from '../../actions/show-modal'
+import { showAuthorModal } from '../../actions/show-author-modal'
 
 class ControlPanel extends React.Component {
 
     onCreateButtonClick = () => {
-        this.props.showModal(
+        this.props.showAuthorModal(
             'CREATE_AUTHOR'
         )
     };
@@ -23,7 +23,7 @@ class ControlPanel extends React.Component {
 
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({showModal}, dispatch)
+    return bindActionCreators({showAuthorModal}, dispatch)
 }
 
 export default connect(

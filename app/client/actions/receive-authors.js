@@ -1,8 +1,8 @@
 export const RECEIVE_AUTHORS = 'RECEIVE_AUTHORS';
 
-export function receiveAuthors(authors) {
+export function receiveAuthors(url) {
     return {
         type: RECEIVE_AUTHORS,
-        authors: authors
+        baseUrl: url
     }
 };

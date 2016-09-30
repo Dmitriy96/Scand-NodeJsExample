@@ -1,6 +1,5 @@
 import React from 'react';
 import BookElement from './BookElement.react.js'
-import { showModal } from '../actions/show-modal'
 import classnames from 'classnames';
 
 export default class AuthorRow extends React.Component {
@@ -15,7 +14,7 @@ export default class AuthorRow extends React.Component {
 
     static contextTypes = {
         buttonStyle: React.PropTypes.string,
-        url: React.PropTypes.string
+        baseUrl: React.PropTypes.string
     };
 
     constructor(props) {
@@ -32,7 +31,7 @@ export default class AuthorRow extends React.Component {
     };
 
     onEditButtonClick = () => {
-        this.props.showModal(
+        this.props.showAuthorModal(
             'EDIT_AUTHOR',
             this.props.author.id
         )
@@ -41,21 +40,31 @@ export default class AuthorRow extends React.Component {
     onDeleteButtonClick = () => {
         this.props.deleteAuthor(
             this.props.author.id,
-            this.context.url
+            this.context.baseUrl
+        )
+    };
+
+    onShowBooksButtonClick = () => {
+        this.props.showBooks(
+            this.props.author.id
         )
     };
 
     render() {
+        console.log('AuthorRow render', this.props, this.state);
         let btnClass = `btn btn-${this.context.buttonStyle ? this.context.buttonStyle : 'danger'}`;
+        let url = `/authors/${this.props.author.id}/books`;
         let author = this.props.author;
+        let books = [];
+        author.books.map(function(book, index) {
+            books.push(<BookElement book={book} key={index}/>)
+        });
         return (
             <tr>
                 <td>{author.name}</td>
                 <td>{author.surname}</td>
                 <td>
-                    {author.books.map(function(book, index) {
-                        return <BookElement book={book} key={index}/>
-                    })}
+                    {books}
                 </td>
                 <td>
                     <label>{this.state.value}</label>
@@ -64,6 +73,9 @@ export default class AuthorRow extends React.Component {
                 <td>
                     <button type="button" className="btn btn-warning" onClick={this.onEditButtonClick}>Edit</button>
                     <button type="button" className="btn btn-danger" onClick={this.onDeleteButtonClick}>Delete</button>
+                </td>
+                <td>
+                    <button type="button" className="btn btn-success" onClick={this.onShowBooksButtonClick}>Show books</button>
                 </td>
             </tr>
         );

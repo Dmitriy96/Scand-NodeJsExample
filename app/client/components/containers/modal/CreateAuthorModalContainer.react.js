@@ -1,13 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Modal } from 'react-bootstrap';
-import BookElement from './BookElement.react.js'
+import BookElement from './../../BookElement.react.js'
+import { createAuthor } from '../../../actions/create-author'
+import { hideAuthorModal } from '../../../actions/hide-author-modal'
 
-export default class EditAuthorModal extends React.Component {
+class CreateAuthorModal extends React.Component {
 
     state = {
         name: '',
         surname: '',
         bookTitle: ''
+    };
+
+    static contextTypes = {
+        baseUrl: React.PropTypes.string
     };
 
     onNameChange = (event) => {
@@ -29,6 +37,7 @@ export default class EditAuthorModal extends React.Component {
     };
 
     render() {
+        console.log("CreateAuthorModal render", this.context.baseUrl);
         return (
             <Modal show={true}>
                 <Modal.Header>
@@ -54,17 +63,18 @@ export default class EditAuthorModal extends React.Component {
                     <div className="btn-group">
                         <button className="btn btn-success" onClick={() => {
                                 this.props.createAuthor(
+                                this.context.baseUrl,
                                 {
                                     name: this.state.name,
                                     surname: this.state.surname,
-                                    books: [{title: this.state.bookTitle, publishingDate: new Date()}]
+                                    books: [{name: this.state.bookTitle, publishingDate: new Date()}]
                                 });
-                                this.props.hideModal();
+                                this.props.hideAuthorModal();
                             }
                         }>
                             Create
                         </button>
-                        <button className="btn btn-default" onClick={this.props.hideModal}>
+                        <button className="btn btn-default" onClick={this.props.hideAuthorModal}>
                             Cancel
                         </button>
                     </div>
@@ -73,3 +83,20 @@ export default class EditAuthorModal extends React.Component {
         );
     }
 }
+
+function mapStateToProps(state, ownProps) {
+    console.log('CreateAuthorModal mapStateToProps', state, ownProps);
+    return {
+        //modalType: state.modal.modalType,
+        id: state.authors.id    // remove
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({createAuthor, hideAuthorModal}, dispatch)
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CreateAuthorModal)
