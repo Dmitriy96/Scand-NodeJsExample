@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import _ from 'lodash'
 import { RECEIVE_AUTHORS } from '../actions/receive-authors'
 import { UPDATE_AUTHOR } from '../actions/update-author'
 import { CREATE_AUTHOR } from '../actions/create-author'
@@ -12,6 +13,16 @@ import { CREATE_BOOK } from '../actions/create-book'
 import { UPDATE_BOOK } from '../actions/update-book'
 
 
+function mergeWithCustomizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+        return objValue.concat(srcValue);
+    }
+    if (_.isObjectLike(objValue)) {
+        return Object.assign({}, objValue, srcValue);
+    }
+}
+
+
 function authors(state = {
     updatedAuthor: null,
     newAuthor: null,
@@ -21,6 +32,7 @@ function authors(state = {
 }, action) {
     switch (action.type) {
         case RECEIVE_AUTHORS: {
+            //let currentState = Object.assign({}, state);
             return Object.assign({}, state, {
                 authors: action.authors
             });
@@ -78,6 +90,12 @@ function authors(state = {
                 book: null,
                 authorId: action.authorId
             });
+            //let a = {authorId: 1, author: {id: 2, name: 'Jack', surname: 'London', books: [{id: 1, title: 'Martin Iden'}]}, authors: [{id: 2, name: 'Jack', surname: 'London', books: [{id: 1, title: 'Martin Iden'}]}, {id: 3, name: 'Ayn', surname: 'Rand', books: [{id: 2, title: 'Atlas Shrugged'}]}]};
+            //let b = {authorId: 3, author: {id: 2, name: 'John', surname: 'London', books: [{id: 1, title: 'Martin Id'}]}};
+            //_.mergeWith(
+            //    a,
+            //    b,
+            //    mergeWithCustomizer);
             if (action.bookId) {
                 let author = newState.authors.find(function(author) {
                     return author.id == action.authorId;
