@@ -9,8 +9,8 @@ export const receiveAuthorsRequest = store => next => action => {
         .get(action.baseUrl)
         .end((err, res) => {
             if (!err && res.ok) {
+                console.log('middleware receiveAuthorsRequest', res);
                 action.authors = res.body;
-                //return store.dispatch(deleteAuthor(action.id))
                 return next(action)
             }
         });

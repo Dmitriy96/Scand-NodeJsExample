@@ -2,16 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Modal } from 'react-bootstrap';
-import BookElement from './../../BookElement.react.js'
-import { createAuthor } from '../../../actions/create-author'
-import { hideAuthorModal } from '../../../actions/hide-author-modal'
+import BookElement from './BookElement.react.js'
+import { createAuthor } from '../actions/create-author'
+import { hideAuthorModal } from '../actions/hide-author-modal'
 
-class CreateAuthorModal extends React.Component {
+export default class CreateAuthorModal extends React.Component {
 
     state = {
         name: '',
-        surname: '',
-        bookTitle: ''
+        surname: ''
     };
 
     static contextTypes = {
@@ -30,14 +29,7 @@ class CreateAuthorModal extends React.Component {
         });
     };
 
-    onBookTitleChange = (event) => {
-        this.setState({
-            bookTitle: event.target.value
-        });
-    };
-
     render() {
-        console.log("CreateAuthorModal render", this.context.baseUrl);
         return (
             <Modal show={true}>
                 <Modal.Header>
@@ -47,15 +39,11 @@ class CreateAuthorModal extends React.Component {
                     <div>
                         <div className="form-group">
                             <label>Name: </label>
-                            <input type="text" className="form-control" value={this.state.name} onChange={this.onNameChange}/>
+                            <input type="text" className="form-control" value={this.state.name} onChange={this.onNameChange} required/>
                         </div>
                         <div className="form-group">
                             <label>Surname: </label>
-                            <input type="text" className="form-control" value={this.state.surname} onChange={this.onSurnameChange}/>
-                        </div>
-                        <div className="form-group">
-                            <label>Book title: </label>
-                            <input type="text" className="form-control" value={this.state.bookTitle} onChange={this.onBookTitleChange}/>
+                            <input type="text" className="form-control" value={this.state.surname} onChange={this.onSurnameChange} required/>
                         </div>
                     </div>
                 </Modal.Body>
@@ -67,7 +55,7 @@ class CreateAuthorModal extends React.Component {
                                 {
                                     name: this.state.name,
                                     surname: this.state.surname,
-                                    books: [{name: this.state.bookTitle, publishingDate: new Date()}]
+                                    books: []
                                 });
                                 this.props.hideAuthorModal();
                             }
@@ -83,20 +71,3 @@ class CreateAuthorModal extends React.Component {
         );
     }
 }
-
-function mapStateToProps(state, ownProps) {
-    console.log('CreateAuthorModal mapStateToProps', state, ownProps);
-    return {
-        //modalType: state.modal.modalType,
-        id: state.authors.id    // remove
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({createAuthor, hideAuthorModal}, dispatch)
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CreateAuthorModal)

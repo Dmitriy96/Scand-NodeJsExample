@@ -11,11 +11,12 @@ import { HIDE_BOOK_MODAL } from '../actions/hide-book-modal'
 import { SHOW_BOOKS } from '../actions/show-books'
 import { CREATE_BOOK } from '../actions/create-book'
 import { UPDATE_BOOK } from '../actions/update-book'
+import { DELETE_BOOK } from '../actions/delete-book'
 
 
 function mergeWithCustomizer(objValue, srcValue) {
     if (_.isArray(objValue)) {
-        return objValue.concat(srcValue);
+        return _.uniqBy(objValue.concat(srcValue), 'id');
     }
     if (_.isObjectLike(objValue)) {
         return Object.assign({}, objValue, srcValue);
@@ -32,44 +33,53 @@ function authors(state = {
 }, action) {
     switch (action.type) {
         case RECEIVE_AUTHORS: {
-            //let currentState = Object.assign({}, state);
-            return Object.assign({}, state, {
-                authors: action.authors
+            let newState = _.cloneDeep(state);
+            action.authors.forEach(function(author) {
+                author.books.forEach(function(book) {
+                    book.publishingDate = new Date(book.publishingDate);
+                })
             });
+            _.mergeWith(newState, {
+                authors: action.authors
+            }, mergeWithCustomizer);
+            return newState;
         } break;
         case UPDATE_AUTHOR: {
-            let newState = Object.assign({}, state, {
-                updatedAuthor: action.updatedAuthor,
-                id: action.id
-            });
-            newState.authors = newState.authors.map(function (author) {
-                return author.id == action.id ? action.updatedAuthor : author;
+            let newState = _.cloneDeep(state);
+            newState.authors.forEach(function(author) {
+                if (author.id === action.updatedAuthor.id) {
+                    _.mergeWith(author, action.updatedAuthor, mergeWithCustomizer);
+                }
             });
             return newState;
         } break;
         case DELETE_AUTHOR: {
-            let newState = Object.assign({}, state, {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 surname: null
-            });
+            }, mergeWithCustomizer);
             let author = newState.authors.find(function (author) {
                 return author.id == action.id;
             });
-            var index = newState.authors.indexOf(author);
+            let index = newState.authors.indexOf(author);
             newState.authors.splice(index, 1);
             return newState;
         } break;
         case CREATE_AUTHOR: {
-            let newState = Object.assign({}, state, {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 newAuthor: null
-            });
+            }, mergeWithCustomizer);
             newState.authors.push(action.newAuthor);
             return newState;
         } break;
         case SHOW_AUTHOR_MODAL: {
             let author;
-            let newState = Object.assign({}, state, {
-                id: action.id
-            });
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
+                id: action.id,
+                modalType: action.modalType
+            }, mergeWithCustomizer);
             if (action.id) {
                 author = newState.authors.find(function (author) {
                     return author.id == action.id
@@ -79,23 +89,21 @@ function authors(state = {
             return newState;
         } break;
         case HIDE_AUTHOR_MODAL: {
-            return Object.assign({}, state, {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 author: null,
-                id: null
-            });
+                id: null,
+                modalType: null
+            }, mergeWithCustomizer);
+            return newState;
         } break;
         case SHOW_BOOK_MODAL: {
-            console.log('reducer SHOW_BOOK_MODAL', action, state);
-            let newState = Object.assign({}, state, {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 book: null,
-                authorId: action.authorId
-            });
-            //let a = {authorId: 1, author: {id: 2, name: 'Jack', surname: 'London', books: [{id: 1, title: 'Martin Iden'}]}, authors: [{id: 2, name: 'Jack', surname: 'London', books: [{id: 1, title: 'Martin Iden'}]}, {id: 3, name: 'Ayn', surname: 'Rand', books: [{id: 2, title: 'Atlas Shrugged'}]}]};
-            //let b = {authorId: 3, author: {id: 2, name: 'John', surname: 'London', books: [{id: 1, title: 'Martin Id'}]}};
-            //_.mergeWith(
-            //    a,
-            //    b,
-            //    mergeWithCustomizer);
+                authorId: action.authorId,
+                modalType: action.modalType
+            }, mergeWithCustomizer);
             if (action.bookId) {
                 let author = newState.authors.find(function(author) {
                     return author.id == action.authorId;
@@ -107,49 +115,65 @@ function authors(state = {
             return newState;
         } break;
         case HIDE_BOOK_MODAL: {
-            return Object.assign({}, state, {
-                book: null
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
+                book: null,
+                modalType: null
                 //authorId: null
-            });
+            }, mergeWithCustomizer);
+            return newState;
         } break;
         case SHOW_BOOKS: {
-            console.log('reducer SHOW_BOOKS', action, state);
-            let newState = Object.assign({}, state, {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 author: null,
                 authorId: action.authorId
-            });
+            }, mergeWithCustomizer);
             newState.author = newState.authors.find(function(author) {
                 return author.id == action.authorId
             });
             return newState;
         } break;
         case CREATE_BOOK: {
-            console.log('reducer CREATE_BOOK', action, state);
-            let newState = Object.assign({}, state, {
-                newBook: null,
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
                 authorId: action.authorId
-            });
+            }, mergeWithCustomizer);
             let author = newState.authors.find(function(author) {
                 return author.id == action.authorId;
             });
+            action.newBook.publishingDate = new Date(action.newBook.publishingDate);
             author.books.push(action.newBook);
             return newState;
         } break;
         case UPDATE_BOOK: {
-            console.log('reducer UPDATE_BOOK', action, state);
-            let newState = Object.assign({}, state, {
-                //updatedBook: null,
-                //book: null,
-                authorId: null
-            });
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
+                book: null
+                //authorId: null
+            }, mergeWithCustomizer);
             let author = newState.authors.find(function(author) {
                 return author.id == action.authorId;
             });
-            console.log('reducer UPDATE_BOOK 2', author);
             author.books = author.books.map(function(book) {
                 return book.id == action.updatedBook.id ? action.updatedBook : book;
             });
-            console.log('reducer UPDATE_BOOK 3', author);
+            return newState;
+        } break;
+        case DELETE_BOOK: {
+            let newState = _.cloneDeep(state);
+            _.mergeWith(newState, {
+                book: null
+                //authorId: null
+            }, mergeWithCustomizer);
+            let author = newState.authors.find(function(author) {
+                return author.id == action.authorId;
+            });
+            let book = author.books.find(function(book) {
+                return book.id == action.bookId;
+            });
+            let index = author.books.indexOf(book);
+            author.books.splice(index, 1);
             return newState;
         } break;
         default:

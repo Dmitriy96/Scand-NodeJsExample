@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class ControlPanel extends React.Component {
+export default class BooksControlPanel extends React.Component {
 
     onCreateButtonClick = () => {
         this.props.showBookModal(
@@ -9,10 +9,17 @@ export default class ControlPanel extends React.Component {
         )
     };
 
+    onAuthorsListButtonClick = () => {
+        this.props.showAuthors()
+    };
+
     render() {
         return (
-            <div>
-                <button type="button" className="btn btn-success" onClick={this.onCreateButtonClick}>Create</button>
+            <div className="page-header">
+                <div className="btn-group">
+                    <button type="button" className="btn btn-success" onClick={this.onCreateButtonClick}>Create</button>
+                    <button type="button" className="btn btn-info" onClick={this.onAuthorsListButtonClick}>Authors List</button>
+                </div>
             </div>
         );
     }

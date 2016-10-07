@@ -1,29 +1,32 @@
-import Author from "./model/author"
-import Book from "./model/book"
-var express = require('express');
-var app = express();
+import express from 'express';
+import Sequelize from 'sequelize';
+import Author from './model/author'
+import Book from './model/book'
+
+let sequelize = new Sequelize('mysql://root:superpuper@localhost:3306/authors');
+
+sequelize
+    .sync({force: true})
+    .then(function (res) {
+        console.log('It worked!', res);
+        Book.create({name: 'Martin Iden', publishingDate: new Date()}).then(function(book) {
+            Author.create({name: 'Jack', surname: 'London', books: [book]});
+        });
+        Book.create({name: 'Atlas Struggled', publishingDate: new Date()}).then(function(book) {
+            Author.create({name: 'Ayn', surname: 'Rand', books: [book]});
+        });
+    }, function (err) {
+        console.log('An error occurred while creating the table:', err);
+    });
+
+let app = express();
 
 app.use(express.static('public/html'));
 app.use(express.static('public/images'));
 app.use(express.static('public/js'));
 app.use(express.static('public/stylesheets'));
 
-app.get('/authors', function(req, res) {
-    new Promise(function(resolve, reject) {
-        let books = [
-            [new Book('Martin Iden', new Date()), new Book('The Iron Heel', new Date())],
-            [new Book('Atlas Shrugged', new Date()), new Book('The Fountainhead', new Date())]
-        ];
-        resolve(books)
-    }).then(function(books) {
-        return [
-            new Author('Jack','London', books[0]),
-            new Author('Ayn', 'Rand', books[1])
-        ];
-    }).then(function(authors) {
-        res.json(authors);
-    });
-});
+app.use(require('./controllers'));
 
 app.listen(3000, function() {
     console.log("Listening port 3000.")

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Modal } from 'react-bootstrap';
 import BookRowContainer from './containers/BookRowContainer.react'
 
 export default class BookTable extends React.Component {
@@ -14,13 +15,49 @@ export default class BookTable extends React.Component {
         ).isRequired
     };
 
+    static contextTypes = {
+        baseUrl: React.PropTypes.string
+    };
+
+    state = {
+        showConfirmDeletingDialog: false,
+        deletionAttributes: {}
+    };
+
+    onDeleteButtonClick = (bookId, authorId) => {
+        this.setState({
+            showConfirmDeletingDialog: true,
+            deletionAttributes: {
+                bookId,
+                authorId
+            }
+        });
+    };
+
+    onCancelDeletionButtonClick = () => {
+        this.setState({
+            showConfirmDeletingDialog: false
+        });
+    };
+
+    onConfirmDeletionButtonClick = () => {
+        this.setState({
+            showConfirmDeletingDialog: false,
+            deletionAttributes: {}
+        });
+        this.props.deleteBook(
+            this.state.deletionAttributes.bookId,
+            this.state.deletionAttributes.authorId,
+            this.context.baseUrl
+        )
+    };
 
     render() {
         console.log('BookTable render', this.props, this.state);
         var rows = [];
         this.props.author.books.forEach((book) => {
             console.log('BookTable render book', book);
-            rows.push(<BookRowContainer book={book} authorId={this.props.author.id} key={book.id} />);
+            rows.push(<BookRowContainer showConfirmDeletion={this.onDeleteButtonClick} hideConfirmDeletion={this.onCancelDeletionButtonClick} book={book} authorId={this.props.author.id} key={book.id} />);
         });
         return (
             <div>
@@ -35,6 +72,22 @@ export default class BookTable extends React.Component {
                     </thead>
                     <tbody>{rows}</tbody>
                 </table>
+                {this.state.showConfirmDeletingDialog &&
+                    <Modal.Dialog>
+                        <Modal.Header>
+                            <Modal.Title>Confirm deletion</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            Delete this book?
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div className="btn-group">
+                                <button type="button" className="btn btn-danger" onClick={this.onConfirmDeletionButtonClick}>Confirm</button>
+                                <button type="button" className="btn btn-default" onClick={this.onCancelDeletionButtonClick}>Cancel</button>
+                            </div>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                }
             </div>
         );
     }

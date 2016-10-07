@@ -2,14 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Modal } from 'react-bootstrap';
-import BookElement from './../../BookElement.react.js'
-import { updateBook } from '../../../actions/update-book'
-import { hideBookModal } from '../../../actions/hide-book-modal'
+import '../../../node_modules/react-date-picker/index.css'
+import { DatePicker } from 'react-datepicker'
+import { DateField, Calendar } from 'react-date-picker'
+import { updateBook } from '../actions/update-book'
+import { hideBookModal } from '../actions/hide-book-modal'
 
-class EditBookModal extends React.Component {
+export default class EditBookModal extends React.Component {
 
     state = {
-        name: this.props.book.name
+        name: this.props.book.name,
+        publishingDate: this.props.book.publishingDate
     };
 
     static contextTypes = {
@@ -22,8 +25,13 @@ class EditBookModal extends React.Component {
         });
     };
 
+    onDateChange = (date) => {
+        this.setState({
+            publishingDate: date
+        });
+    };
+
     render() {
-        console.log("EditBookModal render", this.props, this.state, this.context.baseUrl);
         return (
             <Modal show={true}>
                 <Modal.Header>
@@ -33,7 +41,20 @@ class EditBookModal extends React.Component {
                     <div>
                         <div className="form-group">
                             <label>Title: </label>
-                            <input type="text" className="form-control" value={this.state.name} onChange={this.onNameChange}/>
+                            <input type="text" className="form-control" value={this.state.name} onChange={this.onNameChange} required/>
+                        </div>
+                        <div className="form-group">
+                            <label>DateFieled: </label>
+                            <DateField
+                                className="form-control"
+                                maxDate={new Date()}
+                                defaultValue={this.state.publishingDate}
+                                selected={this.state.publishingDate}
+                                onChange={this.onDateChange}
+                                dateFormat="YYYY-MM-DD"
+                                required="true"
+                                forceValidDate
+                            />
                         </div>
                     </div>
                 </Modal.Body>
@@ -46,7 +67,7 @@ class EditBookModal extends React.Component {
                                 {
                                     id: this.props.book.id,
                                     name: this.state.name,
-                                    publishingDate: this.props.book.publishingDate
+                                    publishingDate: this.state.publishingDate
                                 });
                                 this.props.hideBookModal();
                             }
@@ -62,20 +83,3 @@ class EditBookModal extends React.Component {
         );
     }
 }
-
-function mapStateToProps(state, ownProps) {
-    console.log('EditBookModal mapStateToProps', state, ownProps);
-    return {
-        book: state.authors.book,
-        authorId: state.authors.authorId
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({updateBook, hideBookModal}, dispatch)
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(EditBookModal)

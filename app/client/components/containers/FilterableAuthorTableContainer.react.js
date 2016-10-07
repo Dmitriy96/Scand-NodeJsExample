@@ -3,7 +3,9 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import request from 'superagent';
 import FilterableAuthorTable from '../FilterableAuthorTable.react.js'
+import AuthorModalRootContainer from './AuthorModalRootContainer.react.js'
 import { receiveAuthors } from '../../actions/receive-authors'
+import { deleteAuthor } from '../../actions/delete-author'
 import classNames from 'classnames/bind';
 import styles from './styles.css'
 
@@ -16,8 +18,9 @@ class FilterableAuthorTableContainer extends React.Component {
     };
 
     componentDidMount() {
-        console.log('FilterableAuthorTableContainer componentDidMount', this.props, this.state, this.context.baseUrl);
-        this.props.receiveAuthors(this.context.baseUrl);
+        if (!this.props.authors || this.props.authors.length === 0) {
+            this.props.receiveAuthors(this.context.baseUrl);
+        }
         //try {
         //    //console.log('componentDidMount', this.props);
         //    this.request = request
@@ -49,29 +52,28 @@ class FilterableAuthorTableContainer extends React.Component {
 
 
     render() {
-        console.log('FilterableAuthorTableContainer render', this.props, this.state);
         let className = cx({
             element: true
         });
         let authors = this.props.authors;
         return (
             <div>
-                <FilterableAuthorTable {...authors}/>
+                <FilterableAuthorTable authors={authors} deleteAuthor={this.props.deleteAuthor}/>
+                <AuthorModalRootContainer />
                 <div ></div>
             </div>
         );
     }
 }
 
-function mapStateToProps(state, ownProps) {
-    console.log('FilterableAuthorTableContainer mapStateToProps', state, ownProps);
+function mapStateToProps(state) {
     return {
-        authors: state.authors
+        authors: state.authors.authors
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ receiveAuthors }, dispatch)
+    return bindActionCreators({ receiveAuthors, deleteAuthor }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterableAuthorTableContainer);

@@ -8,21 +8,14 @@ import { deleteBook } from '../../actions/delete-book'
 
 class BookRowContainer extends React.Component {
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('BookRowContainer shouldComponentUpdate', nextProps, nextState, this.props, this.state);
-        return nextProps.book.name !== this.props.book.name;//shallowCompare(this, nextProps, nextState);
-    }
-
     render() {
-        console.log('BookRowContainer render', this.props, this.state);
         return (
-            <BookRow book={this.props.book} authorId={this.props.authorId} showBookModal={this.props.showBookModal} deleteBook={this.props.deleteBook}/>
+            <BookRow showConfirmDeletion={this.props.showConfirmDeletion} book={this.props.book} authorId={this.props.authorId} showBookModal={this.props.showBookModal} deleteBook={this.props.deleteBook}/>
         );
     }
 }
 
-function mapStateToProps(state, ownProps) {
-    console.log('BookRowContainer mapStateToProps', state, ownProps);
+function mapStateToProps(state) {
     return {
         authorId: state.authors.authorId
     };

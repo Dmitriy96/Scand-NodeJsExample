@@ -2,7 +2,8 @@ import React from 'react'
 import { Link, hashHistory } from 'react-router'
 
 
-const baseUrl = 'http://localhost:8080/book-editor/authors';
+//const baseUrl = 'http://localhost:8080/book-editor/authors';
+const baseUrl = 'http://localhost:3000/authors';
 
 export default class App extends React.Component {
 
@@ -17,17 +18,7 @@ export default class App extends React.Component {
     render () {
         return (
             <div>
-                <header>
-                    Links:
-                    {' '}
-                    <Link to="/authors">Home</Link>
-                    {' '}
-                    <Link to="/authors/1/books">Books</Link>
-                </header>
-                <div>
-                    <button onClick={() => hashHistory.push('authors/1/books')}>Books</button>
-                </div>
-                <div>{this.props.children}</div>
+                {this.props.children}
             </div>
         )
     }

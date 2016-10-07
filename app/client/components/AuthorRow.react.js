@@ -38,10 +38,9 @@ export default class AuthorRow extends React.Component {
     };
 
     onDeleteButtonClick = () => {
-        this.props.deleteAuthor(
-            this.props.author.id,
-            this.context.baseUrl
-        )
+        this.props.showConfirmDeletion(
+            this.props.author.id
+        );
     };
 
     onShowBooksButtonClick = () => {
@@ -51,9 +50,7 @@ export default class AuthorRow extends React.Component {
     };
 
     render() {
-        console.log('AuthorRow render', this.props, this.state);
         let btnClass = `btn btn-${this.context.buttonStyle ? this.context.buttonStyle : 'danger'}`;
-        let url = `/authors/${this.props.author.id}/books`;
         let author = this.props.author;
         let books = [];
         author.books.map(function(book, index) {
@@ -71,8 +68,10 @@ export default class AuthorRow extends React.Component {
                     <button type="button" className={btnClass} onClick={this.onIncrementButtonClick}>+</button>
                 </td>
                 <td>
-                    <button type="button" className="btn btn-warning" onClick={this.onEditButtonClick}>Edit</button>
-                    <button type="button" className="btn btn-danger" onClick={this.onDeleteButtonClick}>Delete</button>
+                    <div className="btn-group">
+                        <button type="button" className="btn btn-warning" onClick={this.onEditButtonClick}>Edit</button>
+                        <button type="button" className="btn btn-danger" onClick={this.onDeleteButtonClick}>Delete</button>
+                    </div>
                 </td>
                 <td>
                     <button type="button" className="btn btn-success" onClick={this.onShowBooksButtonClick}>Show books</button>
